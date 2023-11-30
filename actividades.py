@@ -457,4 +457,5 @@ def act_juego():
             #st.write(puntaje_juego)
             
         except Exception as e:
+            print(ruta_del_juego)
             st.error(f"Error de ejecución: {e}")

@@ -14,38 +14,6 @@ def initialize_firebase():
     fb_db = FirebaseDB(cred, url)
     return fb_db
 
-fb_db = initialize_firebase()
-email = ""
-nombre = ""
-id_number = ""
-puntuacion = "0"
-registro_completado = False
-with st.sidebar:
-    st.header('Registro de usuario :sunglasses:', divider='rainbow')
-    with st.form("user"):
-        email = st.text_input('Email', help='Correo electronico')
-        nombre = st.text_input('Nombre Completo', help='Nombre y apellidos')
-        id_number = st.text_input("Número de Identificación", max_chars =10)
-
-        submitted = st.form_submit_button("Submit")
-        if submitted and email != None and nombre != None and len(id_number) == 10:
-            registro_completado = True
-            data = {"email": email, "nombre":nombre, "numero_identificacion": id_number, 'puntuacion': puntuacion}
-            fb_db.write_record(f'/users/{id_number}', data)
-            with st.spinner("Loading..."):
-                time.sleep(3)
-                st.success("Done!")
-        else:
-            st.error("Completa los campos")
-
-
-# Desafio 1
-st.header(f'Bienvenido  :red[{nombre}]', divider='rainbow')
-st.title('Aventura de Datos: Domina el Aprendizaje Supervisado')
-st.markdown("""
-            En un mundo impulsado por datos y tecnología, el aprendizaje supervisado se ha convertido en una de las piedras angulares 
-            del análisis de datos y la inteligencia artificial. ¡Bienvenidos a "Aventura de Datos: Domina el Aprendizaje Supervisado"! 
-            Este emocionante juego te llevará a un viaje educativo que cambiará la forma en que ves y comprendes los datos.""")
 from utils import code_input
 import actividades
 import utils
@@ -58,6 +26,29 @@ def actualizar(i, booleano, cache):
 
 def main():
 
+    fb_db = initialize_firebase()
+    email = ""
+    nombre = ""
+    id_number = ""
+    puntuacion = "0"
+    registro_completado = False
+    with st.sidebar:
+        st.header('Registro de usuario :sunglasses:', divider='rainbow')
+        with st.form("user"):
+            email = st.text_input('Email', help='Correo electronico')
+            nombre = st.text_input('Nombre Completo', help='Nombre y apellidos')
+            id_number = st.text_input("Número de Identificación", max_chars =10)
+
+            submitted = st.form_submit_button("Submit")
+            if submitted and email != None and nombre != None and len(id_number) == 10:
+                registro_completado = True
+                data = {"email": email, "nombre":nombre, "numero_identificacion": id_number, 'puntuacion': puntuacion}
+                fb_db.write_record(f'/users/{id_number}', data)
+                with st.spinner("Loading..."):
+                    time.sleep(3)
+                    st.success("Done!")
+                    
+    st.header(f'Bienvenido  :red[{nombre}]', divider='rainbow')
     st.title('Aventura de Datos: Domina el Aprendizaje Supervisado')
     st.markdown("""
                 En un mundo impulsado por datos y tecnología, el aprendizaje supervisado se ha convertido en una de las piedras angulares 
@@ -79,39 +70,48 @@ def main():
                 donde el resultado deseado es predecir si un pasajero sobrevivio o no.
     """)
     
+    
     actividades.act_1()
     if actividades.ret_valores()[0][0] == True:
         actividades.act_2()
         if actividades.ret_valores()[1][0] == True:
+            fb_db.update_record(f"/users/{id_number}", {"puntuacion": "1.0"})
             actividades.act_3()        
             if actividades.ret_valores()[2][0] == True:
                 actividades.act_4()        
                 if actividades.ret_valores()[3][0] == True:
+                    fb_db.update_record(f"/users/{id_number}", {"puntuacion": "2.0"})
                     actividades.act_5()
                     if actividades.ret_valores()[4][0] == True:
                         actividades.act_6()        
                         if actividades.ret_valores()[5][0] == True:
+                            fb_db.update_record(f"/users/{id_number}", {"puntuacion": "2.5"})
                             actividades.act_7()        
                             if actividades.ret_valores()[6][0] == True:
                                 actividades.act_8()
                                 if actividades.ret_valores()[7][0] == True:
+                                    fb_db.update_record(f"/users/{id_number}", {"puntuacion": "3.0"})
                                     actividades.act_9()
                                     if actividades.ret_valores()[8][0] == True:
                                         actividades.act_10()
                                         if actividades.ret_valores()[9][0] == True:
+                                            fb_db.update_record(f"/users/{id_number}", {"puntuacion": "3.5"})
                                             actividades.act_11()
                                             if actividades.ret_valores()[10][0] == True:
                                                 actividades.act_12()
                                                 if actividades.ret_valores()[11][0] == True:
+                                                    fb_db.update_record(f"/users/{id_number}", {"puntuacion": "4.0"})
                                                     actividades.act_13()
                                                     if actividades.ret_valores()[12][0] == True:
                                                         actividades.act_14()
                                                         if actividades.ret_valores()[13][0] == True:
+                                                            fb_db.update_record(f"/users/{id_number}", {"puntuacion": "5.0"})
                                                             actividades.act_15()
                                                             if actividades.ret_valores()[14][0] == True:
                                                                 actividades.act_juego()
                                                                 st.text("Puntaje del juego:")
                                                                 st.write(actividades.ret_puntaje_juego())
+
 
 if __name__ == "__main__":
     main()
