@@ -5,11 +5,45 @@ from sklearn.model_selection import train_test_split
 from streamlit_tags import st_tags
 import numpy as np
 import time
+from firebase_database import FirebaseDB
 import pandas as pd
 
-# Just add it after st.sidebar:
-#   sidebar = st.sidebar.radio('Choose:',[1,2])
 
+# Sidebar login
+@st.cache_data
+def initialize_firebase():
+    cred = "streamlit-firebase-demo-4e954-firebase.json"
+    url = "https://streamlit-firebase-demo-4e954-default-rtdb.firebaseio.com/"
+    fb_db = FirebaseDB(cred, url)
+    return fb_db
+
+fb_db = initialize_firebase()
+email = ""
+nombre = ""
+id_number = ""
+puntuacion = "0"
+registro_completado = False
+with st.sidebar:
+    st.header('Registro de usuario :sunglasses:', divider='rainbow')
+    with st.form("user"):
+        email = st.text_input('Email', help='Correo electronico')
+        nombre = st.text_input('Nombre Completo', help='Nombre y apellidos')
+        id_number = st.text_input("Número de Identificación", max_chars =10)
+
+        submitted = st.form_submit_button("Submit")
+        if submitted and email != None and nombre != None and len(id_number) == 10:
+            registro_completado = True
+            data = {"email": email, "nombre":nombre, "numero_identificacion": id_number, 'puntuacion': puntuacion}
+            fb_db.write_record(f'/users/{id_number}', data)
+            with st.spinner("Loading..."):
+                time.sleep(3)
+                st.success("Done!")
+        else:
+            st.error("Completa los campos")
+
+
+# Desafio 1
+st.header(f'Bienvenido  :red[{nombre}]', divider='rainbow')
 st.title('Aventura de Datos: Domina el Aprendizaje Supervisado')
 st.markdown("""
             En un mundo impulsado por datos y tecnología, el aprendizaje supervisado se ha convertido en una de las piedras angulares 
@@ -230,8 +264,6 @@ y = df_titanic["Survived"]""")
 #     'How would you like to be contacted?',
 #     ('Email', 'Home phone', 'Mobile phone')
 # )
-
-
 
 
 
